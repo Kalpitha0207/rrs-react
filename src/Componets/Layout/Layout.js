@@ -21,13 +21,14 @@ export class Layout extends Component {
     }
 
     render() {
+        var token = localStorage.getItem("token");
         return (
             <div>
-                <Header />
+                <Header token={token}/>
                 {this.getRoutes(routes)}
                 <Footer />
-                <Signin />
-                <Signup />
+                {/* <Signin />
+                <Signup /> */}
             </div>
         )
     }

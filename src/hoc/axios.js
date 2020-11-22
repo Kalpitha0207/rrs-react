@@ -1,11 +1,12 @@
 import axios from "axios";
 
 const instance = axios.create({
-    baseURL: ""
+    baseURL: "http://54.193.115.135:5000/api/user/"
 });
 
-instance.defaults.headers.common['Content-Type'] = "application/json";
-instance.defaults.headers.common['apikey'] = "";
+// instance.defaults.headers.common['Content-Type'] = "application/json";
+instance.defaults.headers.common['Access-Control-Allow-Origin'] = "*";
+// instance.defaults.headers.common['apikey'] = "";
 
 instance.interceptors.request.use(
     request => {

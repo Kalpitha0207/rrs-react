@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { toast } from 'react-toastify';
+import Axios from '../../hoc/axios';
 
 export class Rental extends Component {
     state = {
@@ -39,7 +41,6 @@ export class Rental extends Component {
         })
     }
 
-
     handleChange = (event) => {
         var name = event.target.name;
         var value = event.target.value;
@@ -50,11 +51,39 @@ export class Rental extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        // this.props.history.push('/payment');
+        var token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Please Login");
+            return;
+        }
+        const { type, type2, fromDate, toDate, noOfBikes } = this.state;
+        if (noOfBikes === 0) {
+            toast.error("Please select no of Bikes");
+            return;
+        }
+        const body = {
+            equipmentType: type,
+            fromDate: fromDate,
+            toDate: toDate,
+            noOfBikes: noOfBikes,
+            picnicLunch: type2
+        }
+        const URl = "rentalsHikes";
+        Axios.post(URl, body)
+            .then(res => {
+                console.log(res);
+                toast.success("Rentals Hikes is successfully created");
+                // this.props.history.push('/payment');
+            })
+            .catch(err => {
+                const error = err.response?.data?.errors.message;
+                toast.error(error);
+            })
     }
 
     render() {
         const { isChecked, noOfBikes } = this.state;
+        var token = localStorage.getItem("token");
 
         return (
             <>
@@ -79,6 +108,7 @@ export class Rental extends Component {
                         <div className="row justify-content-center">
                             <div className="col-md-6">
                                 <div className="choose-box about1">
+                                    {token ? null : <p className="text-danger">Please login</p>}
                                     <h4 className="choose-box-header mb-2">
                                         Rentals and Hikes
                       </h4>
@@ -102,9 +132,9 @@ export class Rental extends Component {
                                                 <label>Day tours that include a picnic lunch can be scheduled <span className="text-danger">*</span></label>
                                                 <select name="type2" defaultValue={'DEFAULT'} onChange={this.handleChange} className="form-inp">
                                                     <option value="DEFAULT">Select Option</option>
-                                                    <option value="1">Viewing wildflowers</option>
-                                                    <option value="1">Hiking in Palm Canyon</option>
-                                                    <option value="1">Off-road guided tours on bicycles, motorcycles, or dune buggies</option>
+                                                    <option>Viewing wildflowers</option>
+                                                    <option>Hiking in Palm Canyon</option>
+                                                    <option>Off-road guided tours on bicycles, motorcycles, or dune buggies</option>
                                                 </select>
                                             </div>
                                             : (null)}
@@ -140,9 +170,9 @@ export class Rental extends Component {
                                     <h4 className="choose-box-header">
                                         Ads
                       </h4>
-                                    <img src="images/hi4.jpg" alt="no image" className="img-thumbnail mb-3" />
-                                    <img src="images/hi5.jpg" alt="no image" className="img-thumbnail mb-3" />
-                                    <img src="images/hi1.jfif" alt="no image" className="img-thumbnail mb-3" />
+                                    <img src="images/hi4.jpg" alt="no image1" className="img-thumbnail mb-3" />
+                                    <img src="images/hi5.jpg" alt="no image2" className="img-thumbnail mb-3" />
+                                    <img src="images/hi1.jfif" alt="no image3" className="img-thumbnail mb-3" />
                                 </div>
                             </div>
                         </div>

@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { toast } from 'react-toastify';
+import Axios from '../../hoc/axios';
 
 export class Reservation extends Component {
     state = {
@@ -58,11 +60,40 @@ export class Reservation extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        this.props.history.push('/payment');
+        var token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Please Login");
+            return;
+        }
+        const { type, fromDate, toDate, noOfRooms, noofChildren, noOfAdults } = this.state;
+        if (noOfRooms === 0 || noOfAdults === 0 || noofChildren === 0) {
+            toast.error("Please select no of Rooms/Adults/Children");
+            return;
+        }
+        const body = {
+            reservationType: type,
+            fromDate: fromDate,
+            toDate: toDate,
+            noOfRooms: noOfRooms,
+            noOfAdults: noOfAdults,
+            noOfChildren: noofChildren
+        }
+        const URl = "reservation";
+        Axios.post(URl, body)
+            .then(res => {
+                console.log(res);
+                toast.success("Reservation is successfully created");
+                // this.props.history.push('/payment');
+            })
+            .catch(err => {
+                const error = err.response?.data?.errors.message;
+                toast.error(error);
+            })
     }
 
     render() {
         const { noOfRooms, noOfAdults, noofChildren } = this.state;
+        var token = localStorage.getItem("token");
 
         return (
             <>
@@ -87,9 +118,10 @@ export class Reservation extends Component {
                         <div className="row justify-content-center">
                             <div className="col-md-6">
                                 <div className="choose-box about1">
+                                    {token ? null : <p className="text-danger">Please login</p>}
                                     <h4 className="choose-box-header mb-2">
                                         Reservation
-                      </h4>
+                                    </h4>
                                     {/* <hr/> */}
                                     <form onSubmit={this.handleSubmit}>
                                         <div className="form-grp">
@@ -110,7 +142,7 @@ export class Reservation extends Component {
                                             <div className="form-grp col">
                                                 <label>To Date <span className="text-danger">*</span></label>
                                                 <input type="date" name="toDate" onChange={this.handleChange} className="form-inp" required />
-                                            </div> 
+                                            </div>
                                         </div>
                                         <div className="form-grp form-flex">
                                             <label>No of Rooms</label>

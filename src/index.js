@@ -4,6 +4,16 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+toast.configure({
+  autoClose: 4000,
+  draggable: false,
+  position: toast.POSITION.TOP_RIGHT,
+  hideProgressBar: true,
+  pauseOnFocusLoss: false,
+});
 
 ReactDOM.render(
   <React.StrictMode>

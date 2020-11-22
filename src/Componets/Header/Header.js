@@ -1,31 +1,38 @@
-import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { Component, PureComponent } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 const $ = window.$;
 
-export class Header extends Component {
+export class Header extends PureComponent {
 
-    signin = () => {
-        // $('#login').modal('show');
-        $('#login').modal({
-            keyboard: false
-        })
-        // $('#myModal').modal('hide');
-    }
-    signup = () => {
-        // $('#register').modal('show');
-        $('#register').modal({
-            keyboard: false
-        })
+    // signin = () => {
+    //     // $('#login').modal('show');
+    //     // $('#login').modal({
+    //     //     keyboard: false
+    //     // })
+    //     // $('#myModal').modal('hide');
+    //     this.props.history.push('/signin');
+    // }
+    // signup = () => {
+    //     // $('#register').modal('show');
+    //     // $('#register').modal({
+    //     //     keyboard: false
+    //     // })
+    //     this.props.history.push('/signin');
+    // }
+
+    logout = () => {
+        localStorage.clear();
     }
 
     render() {
+        var { token } = this.props;
         return (
             <header>
                 <nav className="navbar navbar-expand-lg fixed-top">
                     <div className="container">
-                        <a className="navbar-brand" href="/index.html">
+                        <Link className="navbar-brand" to="">
                             <h4 className="logo">RRS</h4>
-                        </a>
+                        </Link>
                         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
                             <i className="fas fa-bars" />
                         </button>
@@ -48,10 +55,28 @@ export class Header extends Component {
                                 </li>
                             </ul>
                             <form className="form-inline my-2 my-lg-0">
-                                <button className="nav-btn" type="button" onClick={this.signup}>Sign
-            Up</button>
-                                <button className="nav-btn nav-btn1" type="button" onClick={this.signin}>Sign
-            In</button>
+                                {token ? <div className="dropdown">
+                                    <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i className="far fa-user-circle"></i>
+                                    </button>
+                                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <NavLink to="/"className="dropdown-item" onClick={this.logout}>Logout</NavLink>
+                                    </div>
+                                </div>
+                                    : <div>
+                                        <NavLink to='/signup'>
+                                            <button className="nav-btn" type="button" >
+                                                Sign Up
+                                    </button>
+                                        </NavLink>
+                                        <NavLink to='/signin'>
+                                            <button className="nav-btn nav-btn1" type="button">
+                                                Sign In
+                                    </button>
+                                        </NavLink>
+                                    </div>
+                                }
+
                             </form>
                         </div>
                     </div>

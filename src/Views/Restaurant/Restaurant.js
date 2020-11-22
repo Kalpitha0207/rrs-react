@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { toast } from 'react-toastify';
+import Axios from '../../hoc/axios';
 
 export class Restaurant extends Component {
 
@@ -62,11 +64,69 @@ export class Restaurant extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        // this.props.history.push('/payment');
+        var token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Please Login");
+            return;
+        }
+        const { select, noOfMeal, guestName, guestRoomNo, date, specialRequest, noOfPeople, serverName, tip, total } = this.state;
+        const type = select === "1" ? "Meal Reservation" : "Charge to Room";
+        if (select === "1") {
+            if (noOfPeople === 0) {
+                toast.error("Please select no of Bikes");
+                return;
+            }
+            const body = {
+                type: type,
+                guestName: guestName,
+                roomNo: parseInt(guestRoomNo),
+                reservationDate: date,
+                noOfPeople: noOfPeople,
+                specialRequest: specialRequest
+            }
+            const URl = "mealReservation";
+            Axios.post(URl, body)
+                .then(res => {
+                    console.log(res);
+                    toast.success("Rentals Hikes is successfully created");
+                    // this.props.history.push('/payment');
+                })
+                .catch(err => {
+                    const error = err.response?.data?.errors.message;
+                    toast.error(error);
+                })            
+        } else {
+            if (noOfMeal === 0) {
+                toast.error("Please select no of People");
+                return;
+            }
+            const body = {
+                type: type,
+                guestName: guestName,
+                roomNo: parseInt(guestRoomNo),
+                serverName: serverName,
+                tipToServer: parseInt(tip),
+                noOfPeople: noOfMeal,
+                total:parseInt(total)
+            }
+            const URl = "chargeToRoom";
+            Axios.post(URl, body)
+                .then(res => {
+                    console.log(res);
+                    toast.success("Charge to Room is successful");
+                    // this.props.history.push('/payment');
+                })
+                .catch(err => {
+                    const error = err.response?.data?.errors.message;
+                    toast.error(error);
+                })
+            
+        }
     }
 
     render() {
         const { isChecked, noOfMeal, noOfPeople, select } = this.state;
+        var token = localStorage.getItem("token");
 
         return (
             <>
@@ -91,6 +151,7 @@ export class Restaurant extends Component {
                         <div className="row justify-content-center">
                             <div className="col-md-6">
                                 <div className="choose-box about1">
+                                    {token ? null : <p className="text-danger">Please login</p>}
                                     <h4 className="choose-box-header mb-2">
                                         Restaurant
             </h4>

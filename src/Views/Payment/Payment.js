@@ -1,8 +1,54 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { toast } from 'react-toastify';
+import Axios from '../../hoc/axios';
 
 export class Payment extends Component {
+    state = {
+        cardNumber: Number,
+        cardName: '',
+        expDate: Date,
+        cvv: Number,
+        amoumt: Number,
+    }
+    
+    handleChange = (event) => {
+        var name = event.target.name;
+        var value = event.target.value;
+        this.setState({
+            [name]: value
+        })
+    }
+
     handleSubmit = () => {
-        this.props.history.push('/paymentview');
+        var token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Please Login");
+            return;
+        }
+        const { cardNumber, cardName, expDate, cvv, amoumt } = this.state;
+
+        if (!cardNumber || !cardName || !expDate || !cvv || !amoumt) {
+            toast.error("Please fill all input fields");
+            return;            
+        }
+
+        const body = {
+            cardNumber: parseInt(cardNumber),
+            cardName: cardName,
+            expDate: expDate,
+            cvv: parseInt(cvv),
+            amoumt: parseInt(amoumt)
+        }
+        const URl = "payment";
+        Axios.post(URl, body)
+            .then(res => {
+                toast.success("Reservation is successfully created");
+                this.props.history.push('/paymentview');
+            })
+            .catch(err => {
+                const error = err.response?.data?.errors.message;
+                toast.error(error);
+            })
     }
     render() {
         return (
@@ -22,9 +68,9 @@ export class Payment extends Component {
                       </h3>
                                 </div>
                                 <div className="col-md-3 text-right">
-                                    <button className="hop-btn">
+                                    {/* <button className="hop-btn">
                                         Register
-                      </button>
+                      </button> */}
                                 </div>
                             </div>
                             <hr className="hop-hr" />
@@ -88,26 +134,26 @@ export class Payment extends Component {
                                             <div className="row">
                                                 <div className="form-group col-md-12">
                                                     <label className="small mb-1">Card Number <span className="text-danger">*</span></label>
-                                                    <input type="number" name className="form-control modal-inp" placeholder="Card number" required />
+                                                    <input type="tel" name="cardNumber" minLength="12" maxLength="12" onChange={this.handleChange} className="form-control modal-inp" placeholder="Card number" required />
                                                 </div>
                                                 <div className="form-group col-md-12">
                                                     <label className="small mb-1">Name on Card <span className="text-danger">*</span></label>
-                                                    <input type="text" name className="form-control modal-inp" placeholder="user name" required />
+                                                    <input type="text" name="cardName" onChange={this.handleChange} className="form-control modal-inp" placeholder="user name" required />
                                                 </div>
                                             </div>
                                             <div className="row">
                                                 <div className="form-group col">
                                                     <label className="small mb-1">Expiry Date <span className="text-danger">*</span></label>
-                                                    <input type="tel" name className="form-control modal-inp" placeholder="Expiry Date" required />
+                                                    <input type="tel" name="expDate" onChange={this.handleChange} className="form-control modal-inp" placeholder="Expiry Date" required />
                                                 </div>
                                                 <div className="form-group col">
                                                     <label className="small mb-1">CVV <span className="text-danger">*</span></label>
-                                                    <input type="tel" name className="form-control modal-inp" placeholder="Pincode" required />
+                                                    <input type="tel" name="cvv" onChange={this.handleChange} minLength="3" maxLength="3" className="form-control modal-inp" placeholder="Pincode" required />
                                                 </div>
                                             </div>
                                             <div className="form-group">
                                                 <label className="small mb-1">Amount <span className="text-danger">*</span></label>
-                                                <input type="number" name className="form-control modal-inp" placeholder="Amount" required />
+                                                <input type="number" name="amoumt" onChange={this.handleChange} className="form-control modal-inp" placeholder="Amount" required />
                                             </div>
                                         </form>
                                     </div>
