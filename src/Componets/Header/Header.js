@@ -25,7 +25,7 @@ export class Header extends PureComponent {
     }
 
     render() {
-        var { token } = this.props;
+        var { token, name } = this.props;
         return (
             <header>
                 <nav className="navbar navbar-expand-lg fixed-top">
@@ -57,7 +57,7 @@ export class Header extends PureComponent {
                             <form className="form-inline my-2 my-lg-0">
                                 {token ? <div className="dropdown">
                                     <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i className="far fa-user-circle"></i>
+                                        <i className="far fa-user-circle"></i> {name}
                                     </button>
                                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <NavLink to="/details"className="dropdown-item">Booking Details</NavLink>

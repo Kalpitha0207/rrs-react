@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../../../Componets/Header/Header';
 import Axios from '../../../hoc/axios';
+import jwt from 'jwt-decode';
+import { toast } from 'react-toastify';
 const $ = window.$;
 
 export class Signin extends Component {
@@ -29,13 +31,22 @@ export class Signin extends Component {
             email: this.state.email,
             password: this.state.password
         }
-        Axios.post("signin", body)
+        Axios.post("user/signin", body)
             .then(res => {
-                localStorage.setItem("token", "218731h2j3njnjn23o4235i5");
+                const token = res.data.token;
+                const user = jwt(token);
+                localStorage.setItem("token", res.data.token);
+                localStorage.setItem("name", user.name);
+                localStorage.setItem("id", user.id);
+                toast.success(res.data.message)
                 this.props.history.push('');
             })
             .catch(err => {
-                console.log("Err", err);
+                if (err.response) {
+                    toast.error(err.response.data.errors?.message)
+                } else {
+                    toast.error(err.message)
+                }
             })
     }
 
@@ -65,7 +76,7 @@ export class Signin extends Component {
                                 </div>
                                 <div className="modal-body px-4 pt-0 login-modal-body">
                                     <form className="mt-3 pt-2" onSubmit={this.handleSubmit}>
-                                        <div className="row justify-content-center mb-3">
+                                        {/* <div className="row justify-content-center mb-3">
                                             <div className="col-3">
                                                 <div className="custom-control custom-radio">
                                                     <input type="radio" id="customRadio1" name="customRadio" className="custom-control-input" />
@@ -78,7 +89,7 @@ export class Signin extends Component {
                                                     <label className="custom-control-label" htmlFor="customRadio2">Admin</label>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> */}
                                         <div className="form-group">
                                             <label className="small mb-1">Email <span className="text-danger">*</span></label>
                                             <input type="email" name="email" onChange={this.handleChange} className="form-control modal-inp" placeholder="Email id" />
@@ -87,9 +98,6 @@ export class Signin extends Component {
                                             <label className="small mb-1">Password <span className="text-danger">*</span></label>
                                             <input type="password" name="password" onChange={this.handleChange} className="form-control modal-inp" placeholder="password" />
                                         </div>
-                                        {/* <p className="modal-footer-text text-left">
-                                        <a href="#forgot" data-toggle="modal">forgot password.?</a>
-                                    </p> */}
                                         <div className="w-100">
                                             <button type="submit" className="login-btn">Sign IN</button>
                                         </div>

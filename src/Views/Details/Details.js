@@ -1,6 +1,45 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { toast } from 'react-toastify';
+import Axios from '../../hoc/axios';
 
 export class Details extends Component {
+    state = {
+        data: undefined,
+    }
+
+    componentDidMount() {
+        this.details();
+    }
+
+    details = () => {
+        var token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Please Login");
+            return;
+        }
+        const body = {
+            userId: localStorage.getItem("id")
+        }
+        const URl = "reservation/getAllReservation";
+        Axios.post(URl, body)
+            .then(res => {
+                this.setState({
+                    data: res.data?.Reservations
+                })
+            })
+            .catch(err => {
+                if (err.response) {
+                    toast.error(err.response.data.errors?.message)
+                } else {
+                    toast.error(err.message)
+                }
+            })
+    }
+
+    date = (val) =>{
+        return new Date(val)
+    } 
+    
     render() {
         return (
             <div>
@@ -33,42 +72,32 @@ export class Details extends Component {
                                             <thead className="thead-dark">
                                                 <tr>
                                                     <th scope="col">SNO</th>
-                                                    <th scope="col">Name</th>
-                                                    <th scope="col">Email</th>
-                                                    <th scope="col">Date</th>
-                                                    <th scope="col">Mobile</th>
-                                                    <th scope="col">Amount</th>
-                                                    <th scope="col">Status</th>
+                                                    <th scope="col">From Date</th>
+                                                    <th scope="col">To Date</th>
+                                                    <th scope="col">No Of Rooms</th>
+                                                    <th scope="col">No Of Adults</th>
+                                                    <th scope="col">No Of Children</th>
+                                                    <th scope="col">Type</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <th scope="row">1</th>
-                                                    <td>Mark</td>
-                                                    <td>Otto</td>
-                                                    <td>22-11-2020</td>
-                                                    <td>989898989</td>
-                                                    <td>$2000</td>
-                                                    <td>Completed</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">2</th>
-                                                    <td>Mark</td>
-                                                    <td>Otto</td>
-                                                    <td>22-11-2020</td>
-                                                    <td>989898989</td>
-                                                    <td>$2000</td>
-                                                    <td>Completed</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">3</th>
-                                                    <td>Mark</td>
-                                                    <td>Otto</td>
-                                                    <td>22-11-2020</td>
-                                                    <td>989898989</td>
-                                                    <td>$2000</td>
-                                                    <td>Completed</td>
-                                                </tr>
+                                                {this.state.data?.length >= 0 ?
+                                                    this.state.data?.map((item, index) => <tr key={item._id}>
+                                                        <th scope="row">{index + 1}</th>
+                                                        <td>{item.fromDate}</td>
+                                                        <td>{item.toDate}</td>
+                                                        <td>{item.noOfRooms}</td>
+                                                        <td>{item.noOfAdults}</td>
+                                                        <td>{item.noOfChildren}</td>
+                                                        <td>
+                                                            {item.reservationType === "1" ? " Prepaid reservations" : (null)}
+                                                            {item.reservationType === "2" ? " 60-days in advance reservations" : (null)}
+                                                            {item.reservationType === "3" ? " Conventional reservations" : (null)}
+                                                            {item.reservationType === "4" ? " Incentive reservations" : (null)}
+                                                        </td>
+                                                    </tr>) : <tr>
+                                                        <td colSpan="6" className="text-center">No data</td>
+                                                    </tr>}
                                             </tbody>
                                         </table>
                                     </div>

@@ -9,8 +9,37 @@ export class Payment extends Component {
         expDate: Date,
         cvv: Number,
         amoumt: Number,
+        reservation: undefined,
+        amount: Number,
     }
+
+    componentDidMount(){
+        const reservation = JSON.parse(localStorage.getItem("reservation"));
+        this.setState({
+            reservation: reservation
+        })
+
+        if (reservation.reservationType === "1") {
+            this.setState({
+                amoumt: 150 * reservation.noOfRooms
+            })
+        } else if (reservation.reservationType === "2") {
+            this.setState({
+                amoumt: 170 * reservation.noOfRooms
+            })            
+        } else if (reservation.reservationType === "3")  {
+            this.setState({
+                amoumt: 100 * reservation.noOfRooms
+            })            
+        } else  if (reservation.reservationType === "4") {
+            this.setState({
+                amoumt: 160 * reservation.noOfRooms
+            })
+        }
+    }
+
     
+
     handleChange = (event) => {
         var name = event.target.name;
         var value = event.target.value;
@@ -29,21 +58,22 @@ export class Payment extends Component {
 
         if (!cardNumber || !cardName || !expDate || !cvv || !amoumt) {
             toast.error("Please fill all input fields");
-            return;            
+            return;
         }
 
         const body = {
+            userId: localStorage.getItem("id"),
             cardNumber: parseInt(cardNumber),
             cardName: cardName,
             expDate: expDate,
             cvv: parseInt(cvv),
             amoumt: parseInt(amoumt)
         }
-        const URl = "payment";
+        const URl = "reservation/payment";
         Axios.post(URl, body)
             .then(res => {
-                toast.success("Reservation is successfully created");
-                this.props.history.push('/paymentview');
+                toast.success("Payment is successful");
+                // this.props.history.push('/paymentview');
             })
             .catch(err => {
                 const error = err.response?.data?.errors.message;
@@ -51,6 +81,8 @@ export class Payment extends Component {
             })
     }
     render() {
+        const name = localStorage.getItem("name");
+        const reservation = JSON.parse(localStorage.getItem("reservation"));
         return (
             <div>
                 <div className="gap" />
@@ -64,8 +96,8 @@ export class Payment extends Component {
                             <div className="row">
                                 <div className="col-md-9">
                                     <h3 className="hop-name">
-                                        Ac Room
-                      </h3>
+                                        Room
+                                    </h3>
                                 </div>
                                 <div className="col-md-3 text-right">
                                     {/* <button className="hop-btn">
@@ -77,58 +109,62 @@ export class Payment extends Component {
                             <div className="row">
                                 <div className="col-md-8">
                                     <p className="hop-subname">
-                                        Name: <span> Sujith</span>
+                                        Name: <span> {name}</span>
                                     </p>
                                     <ul className="hop-list">
                                         <li className="hop-list-li">
-                                            Monday 27th April, 2020, 07:00 PM
-                        </li>
-                                        <li className="hop-list-li">
-                                            <img src="images/location.svg" className="location-icon" alt="location" />
-                          location
-                        </li>
-                                        <li className="hop-list-li">
-                                            <span className="amount">₹1000</span>
+                                            <span className="tag">From Date: </span> {reservation.fromDate}
                                         </li>
                                         <li className="hop-list-li">
+                                            <span className="tag">To Date: </span> {reservation.toDate}
+                                        </li>
+                                        <li className="hop-list-li">
+                                            <img src="images/location.svg" className="location-icon" alt="location" />
+                                            The Borrego Springs resort
+                                        </li>
+                                        <li className="hop-list-li">
+                                            <span className="tag">Amount: </span><span className="amount">${this.state.amoumt}</span>
+                                        </li>
+                                        {/* <li className="hop-list-li">
                                             <span className="tag">Tags: </span> Mandala, Art, Drawing.
-                        </li>
+                                        </li> */}
                                     </ul>
                                     <hr className="hop-hr" />
                                     <h5 className="hop-title">
                                         About
-                      </h5>
+                                    </h5>
                                     <p className="hop-content">
-                                        Hoppers, We are going to get you hypnotized right now. Are you ready? Yes, Our Hobber Sujith
-                                        is all set to teach us the beautiful art of Mandala drawing.
-                      </p>
+                                        Resort Reservation System is for all the fanatics out there who are bored sitting at home, waiting in long lines outside supermarkets or attending work meetings.
+
+                                    </p>
                                     <hr className="hop-hr" />
                                     <h5 className="hop-title">
                                         Details
-                      </h5>
+                                    </h5>
                                     <ul className="requirements-list">
                                         <li className="requirements-list-li">
-                                            Bed
-                        </li>
+                                            No Of Rooms: {reservation.noOfRooms}
+                                        </li>
                                         <li className="requirements-list-li">
-                                            other stuff
-                        </li>
+                                            No Of Adults: {reservation.noOfAdults}
+                                        </li>
                                         <li className="requirements-list-li">
-                                            Food
-                        </li>
+                                            No Of Children: {reservation.noOfChildren}
+                                        </li>
                                         <li className="requirements-list-li">
-                                            Stationary
-                        </li>
-                                        <li className="requirements-list-li">
-                                            All
-                        </li>
+                                            Reservation Type: 
+                                            {reservation.reservationType === "1" ? " Prepaid reservations": (null) }
+                                            {reservation.reservationType === "2" ? " 60-days in advance reservations": (null) }
+                                            {reservation.reservationType === "3" ? " Conventional reservations": (null) }
+                                            {reservation.reservationType === "4" ? " Incentive reservations": (null) }
+                                        </li>
                                     </ul>
                                     <hr className="hop-hr" />
                                 </div>
                                 <div className="col-md-4">
                                     <h5 className="hop-title">
                                         Make Payment
-                      </h5>
+                                    </h5>
                                     <div className="login-modal-body">
                                         <form className="mt-3 pt-2">
                                             <div className="row">
@@ -153,7 +189,7 @@ export class Payment extends Component {
                                             </div>
                                             <div className="form-group">
                                                 <label className="small mb-1">Amount <span className="text-danger">*</span></label>
-                                                <input type="number" name="amoumt" onChange={this.handleChange} className="form-control modal-inp" placeholder="Amount" required />
+                                                <input type="number" name="amoumt" defaultValue={this.state.amoumt} className="form-control modal-inp" placeholder="Pincode" disabled readOnly required />
                                             </div>
                                         </form>
                                     </div>

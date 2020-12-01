@@ -21,10 +21,11 @@ export class Layout extends Component {
     }
 
     render() {
-        var token = localStorage.getItem("token");
+        const token = localStorage.getItem("token");
+        const name = localStorage.getItem("name");
         return (
             <div>
-                <Header token={token}/>
+                <Header token={token} name={name}/>
                 {this.getRoutes(routes)}
                 <Footer />
                 {/* <Signin />

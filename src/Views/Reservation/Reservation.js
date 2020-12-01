@@ -66,11 +66,12 @@ export class Reservation extends Component {
             return;
         }
         const { type, fromDate, toDate, noOfRooms, noofChildren, noOfAdults } = this.state;
-        if (noOfRooms === 0 || noOfAdults === 0 || noofChildren === 0) {
+        if (noOfRooms === 0 || noOfAdults === 0) {
             toast.error("Please select no of Rooms/Adults/Children");
             return;
         }
         const body = {
+            userId: localStorage.getItem("id"),
             reservationType: type,
             fromDate: fromDate,
             toDate: toDate,
@@ -78,16 +79,24 @@ export class Reservation extends Component {
             noOfAdults: noOfAdults,
             noOfChildren: noofChildren
         }
-        const URl = "reservation";
+        const URl = "reservation/reservation";
         Axios.post(URl, body)
             .then(res => {
                 console.log(res);
-                toast.success("Reservation is successfully created");
-                // this.props.history.push('/payment');
+                if (res.data.Success.message === "Reservation completed!") {
+                    toast.success("Reservation is successfully created");  
+                    localStorage.setItem("reservation", JSON.stringify(res.data.Success.data))                  
+                    this.props.history.push('/payment');
+                } else {
+                    toast.error(res.data.Success.message);
+                }
             })
             .catch(err => {
-                const error = err.response?.data?.errors.message;
-                toast.error(error);
+                if (err.response) {
+                    toast.error(err.response.data.errors?.message)
+                } else {
+                    toast.error(err.message)
+                }
             })
     }
 
@@ -123,15 +132,15 @@ export class Reservation extends Component {
                                         Reservation
                                     </h4>
                                     {/* <hr/> */}
-                                    <form onSubmit={this.handleSubmit}>
+                                    <form onSubmit={this.handleSubmit} id="form">
                                         <div className="form-grp">
                                             <label>Type Of Reservation <span className="text-danger">*</span></label>
                                             <select name="type" defaultValue={'DEFAULT'} onChange={this.handleChange} className="form-inp">
                                                 <option value={"DEFAULT"}>Select Option</option>
                                                 <option value="1">Prepaid reservations</option>
-                                                <option value="1">60-days in advance reservations</option>
-                                                <option value="1">Conventional reservations</option>
-                                                <option value="1">Incentive reservations</option>
+                                                <option value="2">60-days in advance reservations</option>
+                                                <option value="3">Conventional reservations</option>
+                                                <option value="4">Incentive reservations</option>
                                             </select>
                                         </div>
                                         <div className="row">

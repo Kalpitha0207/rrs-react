@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Header from '../../../Componets/Header/Header';
-const $ = window.$;
+import Axios from '../../../hoc/axios';
 
 export class Signup extends Component {
     state = {
         email: '',
         password: '',
-        phone: Number,
-        city: '',
+        username: '',
+        // phone: Number,
+        // city: '',
         // address: '',
         // pincode: Number,
         // country: '',
@@ -29,7 +31,27 @@ export class Signup extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
         // this.props.history.push('/payment');
-        $('#register').modal('hide');
+        const body = {
+            email: this.state.email,
+            name: this.state.username,
+            password: this.state.password
+        }
+        Axios.post("user/signup", body)
+            .then(res => {
+                if (res.data.message === "User already available") {
+                    toast.error(res.data.message);
+                    return;
+                }
+                this.props.history.push('/signin');
+                toast.success("Registration is succesful")
+            })
+            .catch(err => {
+                if (err.response) {
+                    toast.error(err.response.data.errors?.message)
+                } else {
+                    toast.error(err.message)
+                }
+            })
     }
 
     render() {
@@ -64,10 +86,10 @@ export class Signup extends Component {
                                                     <label className="small mb-1">Password <span className="text-danger">*</span></label>
                                                     <input type="password" name="password" onChange={this.handleChange} className="form-control modal-inp" placeholder="password" required />
                                                 </div>
-                                                <div className="form-group">
+                                                {/* <div className="form-group">
                                                     <label className="small mb-1">Phone Number <span className="text-danger">*</span></label>
                                                     <input type="number" name="phone" onChange={this.handleChange} className="form-control modal-inp" placeholder="Phone number" required />
-                                                </div>
+                                                </div> */}
                                                 {/* <div className="form-group">
                                                     <label className="small mb-1">Address <span className="text-danger">*</span></label>
                                                     <textarea name="address" onChange={this.handleChange} rows={4} className="form-control modal-inp" placeholder="Address" style={{ height: 'auto' }} required defaultValue={""} />
