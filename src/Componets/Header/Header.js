@@ -60,6 +60,7 @@ export class Header extends PureComponent {
                                         <i className="far fa-user-circle"></i>
                                     </button>
                                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <NavLink to="/details"className="dropdown-item">Booking Details</NavLink>
                                         <NavLink to="/"className="dropdown-item" onClick={this.logout}>Logout</NavLink>
                                     </div>
                                 </div>

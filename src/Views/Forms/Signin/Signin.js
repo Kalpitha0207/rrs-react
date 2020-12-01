@@ -25,8 +25,11 @@ export class Signin extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
         // $('#login').modal('hide');
-        const body = {}
-        Axios.post("sigin")
+        const body = {
+            email: this.state.email,
+            password: this.state.password
+        }
+        Axios.post("signin", body)
             .then(res => {
                 localStorage.setItem("token", "218731h2j3njnjn23o4235i5");
                 this.props.history.push('');
@@ -88,7 +91,7 @@ export class Signin extends Component {
                                         <a href="#forgot" data-toggle="modal">forgot password.?</a>
                                     </p> */}
                                         <div className="w-100">
-                                            <button type="submit" className="login-btn">Sign Ip</button>
+                                            <button type="submit" className="login-btn">Sign IN</button>
                                         </div>
                                         <p className="modal-footer-text text-center">
                                             New to Resort Reservation System..? <Link to="/signup">SIGN UP</Link>.

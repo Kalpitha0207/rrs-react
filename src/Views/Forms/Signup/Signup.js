@@ -9,9 +9,9 @@ export class Signup extends Component {
         password: '',
         phone: Number,
         city: '',
-        address: '',
-        pincode: Number,
-        country: '',
+        // address: '',
+        // pincode: Number,
+        // country: '',
     }
 
     componentDidMount(){
@@ -41,8 +41,6 @@ export class Signup extends Component {
                     <div className="row justify-content-center">
                         <div className="col-md-5">
                             {/* REGISTER */}
-                            {/* <div className="modal fade" id="register" tabIndex={-1} role="dialog" aria-hidden="true">
-                                <div className="modal-dialog modal-dialog-centered" role="document"> */}
                                     <div className="modal-content">
                                         <div className="modal-header d-block position-relative border-0">
                                             <h5 className="modal-title text-center">
@@ -70,7 +68,7 @@ export class Signup extends Component {
                                                     <label className="small mb-1">Phone Number <span className="text-danger">*</span></label>
                                                     <input type="number" name="phone" onChange={this.handleChange} className="form-control modal-inp" placeholder="Phone number" required />
                                                 </div>
-                                                <div className="form-group">
+                                                {/* <div className="form-group">
                                                     <label className="small mb-1">Address <span className="text-danger">*</span></label>
                                                     <textarea name="address" onChange={this.handleChange} rows={4} className="form-control modal-inp" placeholder="Address" style={{ height: 'auto' }} required defaultValue={""} />
                                                 </div>
@@ -97,23 +95,16 @@ export class Signup extends Component {
                                                         <label className="small mb-1">Pincode <span className="text-danger">*</span></label>
                                                         <input type="tel" name="pincode" onChange={this.handleChange} className="form-control modal-inp" placeholder="Pincode" required />
                                                     </div>
-                                                </div>
-                                                {/* <p className="modal-footer-text text-center">
-                                                    <span className="text-danger">* </span> By continuing you agree to the
-            <a href>terms of services</a>
-            And <a href>privacy policy</a>.
-          </p> */}
+                                                </div> */}
                                                 <div className="w-100">
                                                     <button type="submit" className="login-btn">Sign Up</button>
                                                 </div>
                                                 <p className="modal-footer-text text-center">
                                                     have an Already account..? <Link to="/signin">SIGN IN</Link>
-          </p>
+                                                </p>
                                             </form>
                                         </div>
                                     </div>
-                                {/* </div>
-                            </div> */}
                         </div>
                     </div>
                 </div>
