@@ -1,50 +1,37 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom';
 
-export class PaymentView extends Component {
+export class PaymentViewCharge extends Component {
     state = {
-        reservation: undefined,
+        charge: undefined,
         amount: Number,
     }
 
     componentDidMount() {
-        const reservation = JSON.parse(localStorage.getItem("reservation"));
+        const charge = JSON.parse(localStorage.getItem("charge"));
         this.setState({
-            reservation: reservation
+            charge: charge
         })
-        if (reservation === null || reservation === undefined) {
+        if (charge === null || charge === undefined) {
             return;
         }
 
-        // if (reservation.reservationType === "1") {
-        //     this.setState({
-        //         amoumt: 150 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "2") {
-        //     this.setState({
-        //         amoumt: 170 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "3") {
-        //     this.setState({
-        //         amoumt: 100 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "4") {
-        //     this.setState({
-        //         amoumt: 160 * reservation.noOfRooms
-        //     })
-        // }
+
+        this.setState({
+            amoumt: charge.total + (charge.tipToServer || 0)
+        })
     }
 
     home = () => {
         this.props.history.replace('/details');
-        localStorage.removeItem("reservation")
+        localStorage.removeItem("charge")
     }
 
     render() {
         const name = localStorage.getItem("name");
-        const reservation = JSON.parse(localStorage.getItem("reservation"));
-        if (reservation === null || reservation === undefined) {
-            return <Redirect to="/reservation" />
+        const charge = JSON.parse(localStorage.getItem("charge"));
+        if (charge === null || charge === undefined) {
+            return <Redirect to="/restaurant" />
         }
         return (
             <div>
@@ -65,7 +52,7 @@ export class PaymentView extends Component {
                             <div className="row">
                                 <div className="col-md-9">
                                     <h3 className="hop-name">
-                                        Room
+                                        Hikes
                                     </h3>
                                     <p className="hop-subname">
                                         Name: <span> {name}</span>
@@ -77,17 +64,20 @@ export class PaymentView extends Component {
                                 <div className="col-md">
                                     <ul className="hop-list">
                                         <li className="hop-list-li">
-                                            <span className="tag">From Date: </span> {new Date(reservation.fromDate).toLocaleDateString()}
+                                            <span className="tag">Room No: </span> {charge.roomNo}
                                         </li>
                                         <li className="hop-list-li">
-                                            <span className="tag">To Date: </span> {new Date(reservation.toDate).toLocaleDateString()}
+                                            <span className="tag">Guest Name: </span> {charge.guestName}
+                                        </li>
+                                        <li className="hop-list-li">
+                                            <span className="tag">Tip : </span> {charge.tipToServer}
                                         </li>
                                         <li className="hop-list-li">
                                             <img src="images/location.svg" className="location-icon" alt="location" />
                                             The Borrego Springs resort
                                         </li>
                                         <li className="hop-list-li">
-                                            <span className="tag">Amount: </span><span className="amount">${reservation.totalFare}</span>
+                                            <span className="tag">Amount: </span><span className="amount">${this.state.amoumt}</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -105,15 +95,15 @@ export class PaymentView extends Component {
                                         <tbody>
                                             <tr>
                                                 <td className="w-75">Cost</td>
-                                                <td>${reservation.totalFare}</td>
+                                                <td>${charge.total}</td>
                                             </tr>
                                             <tr>
-                                                <td className="w-75">Additional Gst</td>
-                                                <td>$0</td>
+                                                <td className="w-75">Additional Tip</td>
+                                                <td>${charge.tipToServer}</td>
                                             </tr>
                                             <tr className="payment-border">
                                                 <td className="w-75">Total</td>
-                                                <td>${reservation.totalFare}</td>
+                                                <td>${this.state.amoumt}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -125,20 +115,7 @@ export class PaymentView extends Component {
                                 </h5>
                                 <ul className="requirements-list">
                                     <li className="requirements-list-li">
-                                        No Of Rooms: {reservation.noOfRooms}
-                                    </li>
-                                    <li className="requirements-list-li">
-                                        No Of Adults: {reservation.noOfAdults}
-                                    </li>
-                                    <li className="requirements-list-li">
-                                        No Of Children: {reservation.noOfChildren}
-                                    </li>
-                                    <li className="requirements-list-li">
-                                        Reservation Type: {reservation.reservationType}
-                                            {/* {reservation.reservationType === "1" ? " Prepaid reservations" : (null)}
-                                        {reservation.reservationType === "2" ? " 60-days in advance reservations" : (null)}
-                                        {reservation.reservationType === "3" ? " Conventional reservations" : (null)}
-                                        {reservation.reservationType === "4" ? " Incentive reservations" : (null)} */}
+                                        No Of People: {charge.noOfPeople}
                                     </li>
                                 </ul>
                             </div>
@@ -166,4 +143,4 @@ export class PaymentView extends Component {
     }
 }
 
-export default PaymentView;
+export default PaymentViewCharge;

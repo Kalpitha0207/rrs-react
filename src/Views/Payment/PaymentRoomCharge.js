@@ -3,46 +3,29 @@ import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Axios from '../../hoc/axios';
 
-export class Payment extends Component {
+export class PaymentRoomCharge extends Component {
     state = {
         cardNumber: Number,
         cardName: '',
         expDate: Date,
         cvv: Number,
         amoumt: Number,
-        reservation: undefined,
+        charge: undefined,
         amount: Number,
     }
 
     componentDidMount() {
-        const reservation = JSON.parse(localStorage.getItem("reservation"));
+        const charge = JSON.parse(localStorage.getItem("charge"));
         this.setState({
-            reservation: reservation
+            charge: charge
         })
 
-        if (reservation === null || reservation === undefined) {
+        if (charge === null || charge === undefined) {
             return;
         }
         this.setState({
-            amoumt: reservation.totalFare
+            amoumt: charge.total + (charge.tipToServer || 0)
         })
-        // if (reservation.reservationType === "1") {
-        //     this.setState({
-        //         amoumt: 150 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "2") {
-        //     this.setState({
-        //         amoumt: 170 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "3") {
-        //     this.setState({
-        //         amoumt: 100 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "4") {
-        //     this.setState({
-        //         amoumt: 160 * reservation.noOfRooms
-        //     })
-        // }
     }
 
 
@@ -70,7 +53,7 @@ export class Payment extends Component {
 
         const body = {
             userId: localStorage.getItem("id"),
-            paymentType: "Reservation payment",
+            paymentType: "Charge To Room payment",
             cardNumber: parseInt(cardNumber),
             cardName: cardName,
             expDate: expDate,
@@ -81,18 +64,18 @@ export class Payment extends Component {
         Axios.post(URl, body)
             .then(res => {
                 toast.success("Payment is successful");
-                this.props.history.push('/paymentview');
+                this.props.history.replace('/paymentViewCharge');
             })
             .catch(err => {
-                const error = err.response?.errors?.message;
+                const error = err.response?.data?.errors.message;
                 toast.error(error);
             })
     }
     render() {
         const name = localStorage.getItem("name");
-        const reservation = JSON.parse(localStorage.getItem("reservation"));
-        if (reservation === null || reservation === undefined) {
-            return <Redirect to="/reservation" />
+        const charge = JSON.parse(localStorage.getItem("charge"));
+        if (charge === null || charge === undefined) {
+            return <Redirect to="/restaurant" />
         }
         return (
             <div>
@@ -107,7 +90,7 @@ export class Payment extends Component {
                             <div className="row">
                                 <div className="col-md-9">
                                     <h3 className="hop-name">
-                                        Room
+                                        Charge To Room
                                     </h3>
                                 </div>
                             </div>
@@ -119,17 +102,20 @@ export class Payment extends Component {
                                     </p>
                                     <ul className="hop-list">
                                         <li className="hop-list-li">
-                                            <span className="tag">From Date: </span> {new Date(reservation.fromDate).toLocaleDateString()}
+                                            <span className="tag">Room No: </span> {charge.roomNo}
                                         </li>
                                         <li className="hop-list-li">
-                                            <span className="tag">To Date: </span> {new Date(reservation.toDate).toLocaleDateString()}
+                                            <span className="tag">Guest Name: </span> {charge.guestName}
+                                        </li>
+                                        <li className="hop-list-li">
+                                            <span className="tag">Tip : </span> {charge.tipToServer}
                                         </li>
                                         <li className="hop-list-li">
                                             <img src="images/location.svg" className="location-icon" alt="location" />
                                             The Borrego Springs resort
                                         </li>
                                         <li className="hop-list-li">
-                                            <span className="tag">Amount: </span><span className="amount">${reservation.totalFare}</span>
+                                            <span className="tag">Amount: </span><span className="amount">${this.state.amoumt}</span>
                                         </li>
                                     </ul>
                                     <hr className="hop-hr" />
@@ -146,20 +132,7 @@ export class Payment extends Component {
                                     </h5>
                                     <ul className="requirements-list">
                                         <li className="requirements-list-li">
-                                            No Of Rooms: {reservation.noOfRooms}
-                                        </li>
-                                        <li className="requirements-list-li">
-                                            No Of Adults: {reservation.noOfAdults}
-                                        </li>
-                                        <li className="requirements-list-li">
-                                            No Of Children: {reservation.noOfChildren}
-                                        </li>
-                                        <li className="requirements-list-li">
-                                            Reservation Type: {reservation.reservationType}
-                                            {/* {reservation.reservationType === "1" ? " Prepaid reservations" : (null)}
-                                            {reservation.reservationType === "2" ? " 60-days in advance reservations" : (null)}
-                                            {reservation.reservationType === "3" ? " Conventional reservations" : (null)}
-                                            {reservation.reservationType === "4" ? " Incentive reservations" : (null)} */}
+                                            No Of People: {charge.noOfPeople}
                                         </li>
                                     </ul>
                                     <hr className="hop-hr" />
@@ -177,7 +150,7 @@ export class Payment extends Component {
                                                 </div>
                                                 <div className="form-group col-md-12">
                                                     <label className="small mb-1">Name on Card <span className="text-danger">*</span></label>
-                                                    <input type="text" name="cardName" onChange={this.handleChange} className="form-control modal-inp" placeholder="Name on Card" required />
+                                                    <input type="text" name="cardName" onChange={this.handleChange} className="form-control modal-inp" placeholder="user name" required />
                                                 </div>
                                             </div>
                                             <div className="row">
@@ -187,12 +160,12 @@ export class Payment extends Component {
                                                 </div>
                                                 <div className="form-group col">
                                                     <label className="small mb-1">CVV <span className="text-danger">*</span></label>
-                                                    <input type="tel" name="cvv" onChange={this.handleChange} minLength="3" maxLength="3" className="form-control modal-inp" placeholder="CVV" required />
+                                                    <input type="tel" name="cvv" onChange={this.handleChange} minLength="3" maxLength="3" className="form-control modal-inp" placeholder="Pincode" required />
                                                 </div>
                                             </div>
                                             <div className="form-group">
                                                 <label className="small mb-1">Amount <span className="text-danger">*</span></label>
-                                                <input type="number" name="amoumt" defaultValue={this.state.amoumt} className="form-control modal-inp" placeholder="Amount" disabled readOnly required />
+                                                <input type="number" name="amoumt" defaultValue={this.state.amoumt} className="form-control modal-inp" placeholder="Pincode" disabled readOnly required />
                                             </div>
                                         </form>
                                     </div>
@@ -210,4 +183,4 @@ export class Payment extends Component {
     }
 }
 
-export default Payment;
+export default PaymentRoomCharge;

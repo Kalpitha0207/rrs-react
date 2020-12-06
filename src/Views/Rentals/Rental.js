@@ -62,18 +62,19 @@ export class Rental extends Component {
             return;
         }
         const body = {
+            userId: localStorage.getItem("id"),
             equipmentType: type,
             fromDate: fromDate,
             toDate: toDate,
             noOfBikes: noOfBikes,
             picnicLunch: type2
         }
-        const URl = "rentalsHikes";
+        const URl = "reservation/rentalsHikes";
         Axios.post(URl, body)
             .then(res => {
-                console.log(res);
                 toast.success("Rentals Hikes is successfully created");
-                // this.props.history.push('/payment');
+                localStorage.setItem("rentals", JSON.stringify(res.data.success.data));
+                this.props.history.replace('/payment2');
             })
             .catch(err => {
                 const error = err.response?.data?.errors.message;

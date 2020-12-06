@@ -3,46 +3,39 @@ import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Axios from '../../hoc/axios';
 
-export class Payment extends Component {
+export class Payment2 extends Component {
     state = {
         cardNumber: Number,
         cardName: '',
         expDate: Date,
         cvv: Number,
         amoumt: Number,
-        reservation: undefined,
+        rentals: undefined,
         amount: Number,
     }
 
     componentDidMount() {
-        const reservation = JSON.parse(localStorage.getItem("reservation"));
+        const rentals = JSON.parse(localStorage.getItem("rentals"));
         this.setState({
-            reservation: reservation
+            rentals: rentals
         })
 
-        if (reservation === null || reservation === undefined) {
+        if (rentals === null || rentals === undefined) {
             return;
         }
-        this.setState({
-            amoumt: reservation.totalFare
-        })
-        // if (reservation.reservationType === "1") {
-        //     this.setState({
-        //         amoumt: 150 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "2") {
-        //     this.setState({
-        //         amoumt: 170 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "3") {
-        //     this.setState({
-        //         amoumt: 100 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "4") {
-        //     this.setState({
-        //         amoumt: 160 * reservation.noOfRooms
-        //     })
-        // }
+        if (rentals.equipmentType === "1") {
+            this.setState({
+                amoumt: 150 * rentals.noOfBikes
+            })
+        } else if (rentals.equipmentType === "2") {
+            this.setState({
+                amoumt: 170 * rentals.noOfBikes
+            })
+        } else if (rentals.equipmentType === "3") {
+            this.setState({
+                amoumt: 100 * rentals.noOfBikes
+            })
+        }
     }
 
 
@@ -70,7 +63,7 @@ export class Payment extends Component {
 
         const body = {
             userId: localStorage.getItem("id"),
-            paymentType: "Reservation payment",
+            paymentType: "Rental & Hikes payment",
             cardNumber: parseInt(cardNumber),
             cardName: cardName,
             expDate: expDate,
@@ -81,18 +74,18 @@ export class Payment extends Component {
         Axios.post(URl, body)
             .then(res => {
                 toast.success("Payment is successful");
-                this.props.history.push('/paymentview');
+                this.props.history.replace('/paymentview2');
             })
             .catch(err => {
-                const error = err.response?.errors?.message;
+                const error = err.response?.data?.errors.message;
                 toast.error(error);
             })
     }
     render() {
         const name = localStorage.getItem("name");
-        const reservation = JSON.parse(localStorage.getItem("reservation"));
-        if (reservation === null || reservation === undefined) {
-            return <Redirect to="/reservation" />
+        const rentals = JSON.parse(localStorage.getItem("rentals"));
+        if (rentals === null || rentals === undefined) {
+            return <Redirect to="/rentals" />
         }
         return (
             <div>
@@ -107,7 +100,7 @@ export class Payment extends Component {
                             <div className="row">
                                 <div className="col-md-9">
                                     <h3 className="hop-name">
-                                        Room
+                                        Hikes
                                     </h3>
                                 </div>
                             </div>
@@ -119,17 +112,17 @@ export class Payment extends Component {
                                     </p>
                                     <ul className="hop-list">
                                         <li className="hop-list-li">
-                                            <span className="tag">From Date: </span> {new Date(reservation.fromDate).toLocaleDateString()}
+                                            <span className="tag">From Date: </span> {new Date(rentals.fromDate).toLocaleDateString()}
                                         </li>
                                         <li className="hop-list-li">
-                                            <span className="tag">To Date: </span> {new Date(reservation.toDate).toLocaleDateString()}
+                                            <span className="tag">To Date: </span> {new Date(rentals.toDate).toLocaleDateString()}
                                         </li>
                                         <li className="hop-list-li">
                                             <img src="images/location.svg" className="location-icon" alt="location" />
                                             The Borrego Springs resort
                                         </li>
                                         <li className="hop-list-li">
-                                            <span className="tag">Amount: </span><span className="amount">${reservation.totalFare}</span>
+                                            <span className="tag">Amount: </span><span className="amount">${this.state.amoumt}</span>
                                         </li>
                                     </ul>
                                     <hr className="hop-hr" />
@@ -146,20 +139,19 @@ export class Payment extends Component {
                                     </h5>
                                     <ul className="requirements-list">
                                         <li className="requirements-list-li">
-                                            No Of Rooms: {reservation.noOfRooms}
+                                            No Of Bikes: {rentals.noOfBikes}
+                                        </li>
+                                        {/* <li className="requirements-list-li">
+                                            No Of Adults: {rentals.noOfAdults}
                                         </li>
                                         <li className="requirements-list-li">
-                                            No Of Adults: {reservation.noOfAdults}
-                                        </li>
+                                            No Of Children: {rentals.noOfChildren}
+                                        </li> */}
                                         <li className="requirements-list-li">
-                                            No Of Children: {reservation.noOfChildren}
-                                        </li>
-                                        <li className="requirements-list-li">
-                                            Reservation Type: {reservation.reservationType}
-                                            {/* {reservation.reservationType === "1" ? " Prepaid reservations" : (null)}
-                                            {reservation.reservationType === "2" ? " 60-days in advance reservations" : (null)}
-                                            {reservation.reservationType === "3" ? " Conventional reservations" : (null)}
-                                            {reservation.reservationType === "4" ? " Incentive reservations" : (null)} */}
+                                            rentals Type:
+                                            {rentals.equipmentType === "1" ? " All-terrain bicycles" : (null)}
+                                            {rentals.equipmentType === "2" ? " Off-road motorcycles" : (null)}
+                                            {rentals.equipmentType === "3" ? " Dune buggies" : (null)}
                                         </li>
                                     </ul>
                                     <hr className="hop-hr" />
@@ -177,7 +169,7 @@ export class Payment extends Component {
                                                 </div>
                                                 <div className="form-group col-md-12">
                                                     <label className="small mb-1">Name on Card <span className="text-danger">*</span></label>
-                                                    <input type="text" name="cardName" onChange={this.handleChange} className="form-control modal-inp" placeholder="Name on Card" required />
+                                                    <input type="text" name="cardName" onChange={this.handleChange} className="form-control modal-inp" placeholder="user name" required />
                                                 </div>
                                             </div>
                                             <div className="row">
@@ -187,12 +179,12 @@ export class Payment extends Component {
                                                 </div>
                                                 <div className="form-group col">
                                                     <label className="small mb-1">CVV <span className="text-danger">*</span></label>
-                                                    <input type="tel" name="cvv" onChange={this.handleChange} minLength="3" maxLength="3" className="form-control modal-inp" placeholder="CVV" required />
+                                                    <input type="tel" name="cvv" onChange={this.handleChange} minLength="3" maxLength="3" className="form-control modal-inp" placeholder="Pincode" required />
                                                 </div>
                                             </div>
                                             <div className="form-group">
                                                 <label className="small mb-1">Amount <span className="text-danger">*</span></label>
-                                                <input type="number" name="amoumt" defaultValue={this.state.amoumt} className="form-control modal-inp" placeholder="Amount" disabled readOnly required />
+                                                <input type="number" name="amoumt" defaultValue={this.state.amoumt} className="form-control modal-inp" placeholder="Pincode" disabled readOnly required />
                                             </div>
                                         </form>
                                     </div>
@@ -210,4 +202,4 @@ export class Payment extends Component {
     }
 }
 
-export default Payment;
+export default Payment2;

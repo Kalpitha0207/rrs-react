@@ -77,6 +77,7 @@ export class Restaurant extends Component {
                 return;
             }
             const body = {
+                userId: localStorage.getItem("id"),
                 type: type,
                 guestName: guestName,
                 roomNo: parseInt(guestRoomNo),
@@ -84,11 +85,15 @@ export class Restaurant extends Component {
                 noOfPeople: noOfPeople,
                 specialRequest: specialRequest
             }
-            const URl = "mealReservation";
+            const URl = "reservation/mealReservation";
             Axios.post(URl, body)
                 .then(res => {
-                    console.log(res);
-                    toast.success("Rentals Hikes is successfully created");
+                    const clear = document.getElementById("form");
+                    clear.reset();  
+                    toast.success("Meal Reservation not completed!");
+                    this.setState({
+                        noOfPeople: 0
+                    })
                     // this.props.history.push('/payment');
                 })
                 .catch(err => {
@@ -101,6 +106,7 @@ export class Restaurant extends Component {
                 return;
             }
             const body = {
+                userId: localStorage.getItem("id"),
                 type: type,
                 guestName: guestName,
                 roomNo: parseInt(guestRoomNo),
@@ -109,12 +115,13 @@ export class Restaurant extends Component {
                 noOfPeople: noOfMeal,
                 total:parseInt(total)
             }
-            const URl = "chargeToRoom";
+            const URl = "reservation/chargeToRoom";
             Axios.post(URl, body)
                 .then(res => {
                     console.log(res);
                     toast.success("Charge to Room is successful");
-                    // this.props.history.push('/payment');
+                    localStorage.setItem("charge", JSON.stringify(res.data.success.data));
+                    this.props.history.replace('/paymentRoomCharge');
                 })
                 .catch(err => {
                     const error = err.response?.data?.errors.message;
@@ -156,7 +163,7 @@ export class Restaurant extends Component {
                                         Restaurant
             </h4>
                                     {/* <hr/> */}
-                                    <form onSubmit={this.handleSubmit}>
+                                    <form onSubmit={this.handleSubmit} id="form">
                                         <div className="form-group row m-0 mb-4">
                                             <div className="custom-control custom-radio custom-control-inline col">
                                                 <input type="radio" id="Reservation" name="Reservation"

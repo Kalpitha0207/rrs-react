@@ -1,50 +1,50 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom';
 
-export class PaymentView extends Component {
+export class PaymentView2 extends Component {
     state = {
-        reservation: undefined,
+        rentals: undefined,
         amount: Number,
     }
 
     componentDidMount() {
-        const reservation = JSON.parse(localStorage.getItem("reservation"));
+        const rentals = JSON.parse(localStorage.getItem("rentals"));
         this.setState({
-            reservation: reservation
+            rentals: rentals
         })
-        if (reservation === null || reservation === undefined) {
+        if (rentals === null || rentals === undefined) {
             return;
         }
 
-        // if (reservation.reservationType === "1") {
-        //     this.setState({
-        //         amoumt: 150 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "2") {
-        //     this.setState({
-        //         amoumt: 170 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "3") {
-        //     this.setState({
-        //         amoumt: 100 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "4") {
-        //     this.setState({
-        //         amoumt: 160 * reservation.noOfRooms
-        //     })
-        // }
+        if (rentals.equipmentType === "1") {
+            this.setState({
+                amoumt: 150 * rentals.noOfBikes
+            })
+        } else if (rentals.equipmentType === "2") {
+            this.setState({
+                amoumt: 170 * rentals.noOfBikes
+            })
+        } else if (rentals.equipmentType === "3") {
+            this.setState({
+                amoumt: 100 * rentals.noOfBikes
+            })
+        } else if (rentals.equipmentType === "4") {
+            this.setState({
+                amoumt: 160 * rentals.noOfBikes
+            })
+        }
     }
 
     home = () => {
         this.props.history.replace('/details');
-        localStorage.removeItem("reservation")
+        localStorage.removeItem("rentals")
     }
 
     render() {
         const name = localStorage.getItem("name");
-        const reservation = JSON.parse(localStorage.getItem("reservation"));
-        if (reservation === null || reservation === undefined) {
-            return <Redirect to="/reservation" />
+        const rentals = JSON.parse(localStorage.getItem("rentals"));
+        if (rentals === null || rentals === undefined) {
+            return <Redirect to="/rentals" />
         }
         return (
             <div>
@@ -65,7 +65,7 @@ export class PaymentView extends Component {
                             <div className="row">
                                 <div className="col-md-9">
                                     <h3 className="hop-name">
-                                        Room
+                                    Rentals and Hikes
                                     </h3>
                                     <p className="hop-subname">
                                         Name: <span> {name}</span>
@@ -77,17 +77,17 @@ export class PaymentView extends Component {
                                 <div className="col-md">
                                     <ul className="hop-list">
                                         <li className="hop-list-li">
-                                            <span className="tag">From Date: </span> {new Date(reservation.fromDate).toLocaleDateString()}
+                                            <span className="tag">From Date: </span> {new Date(rentals.fromDate).toLocaleDateString()}
                                         </li>
                                         <li className="hop-list-li">
-                                            <span className="tag">To Date: </span> {new Date(reservation.toDate).toLocaleDateString()}
+                                            <span className="tag">To Date: </span> {new Date(rentals.toDate).toLocaleDateString()}
                                         </li>
                                         <li className="hop-list-li">
                                             <img src="images/location.svg" className="location-icon" alt="location" />
                                             The Borrego Springs resort
                                         </li>
                                         <li className="hop-list-li">
-                                            <span className="tag">Amount: </span><span className="amount">${reservation.totalFare}</span>
+                                            <span className="tag">Amount: </span><span className="amount">${this.state.amoumt}</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -105,7 +105,7 @@ export class PaymentView extends Component {
                                         <tbody>
                                             <tr>
                                                 <td className="w-75">Cost</td>
-                                                <td>${reservation.totalFare}</td>
+                                                <td>${this.state.amoumt}</td>
                                             </tr>
                                             <tr>
                                                 <td className="w-75">Additional Gst</td>
@@ -113,7 +113,7 @@ export class PaymentView extends Component {
                                             </tr>
                                             <tr className="payment-border">
                                                 <td className="w-75">Total</td>
-                                                <td>${reservation.totalFare}</td>
+                                                <td>${this.state.amoumt}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -125,20 +125,19 @@ export class PaymentView extends Component {
                                 </h5>
                                 <ul className="requirements-list">
                                     <li className="requirements-list-li">
-                                        No Of Rooms: {reservation.noOfRooms}
+                                        No Of Bikes: {rentals.noOfBikes}
                                     </li>
+                                    {/* <li className="requirements-list-li">
+                                            No Of Adults: {rentals.noOfAdults}
+                                        </li>
+                                        <li className="requirements-list-li">
+                                            No Of Children: {rentals.noOfChildren}
+                                        </li> */}
                                     <li className="requirements-list-li">
-                                        No Of Adults: {reservation.noOfAdults}
-                                    </li>
-                                    <li className="requirements-list-li">
-                                        No Of Children: {reservation.noOfChildren}
-                                    </li>
-                                    <li className="requirements-list-li">
-                                        Reservation Type: {reservation.reservationType}
-                                            {/* {reservation.reservationType === "1" ? " Prepaid reservations" : (null)}
-                                        {reservation.reservationType === "2" ? " 60-days in advance reservations" : (null)}
-                                        {reservation.reservationType === "3" ? " Conventional reservations" : (null)}
-                                        {reservation.reservationType === "4" ? " Incentive reservations" : (null)} */}
+                                        rentals Type:
+                                            {rentals.equipmentType === "1" ? " All-terrain bicycles" : (null)}
+                                        {rentals.equipmentType === "2" ? " Off-road motorcycles" : (null)}
+                                        {rentals.equipmentType === "3" ? " Dune buggies" : (null)}
                                     </li>
                                 </ul>
                             </div>
@@ -166,4 +165,4 @@ export class PaymentView extends Component {
     }
 }
 
-export default PaymentView;
+export default PaymentView2;

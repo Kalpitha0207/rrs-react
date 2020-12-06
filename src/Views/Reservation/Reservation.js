@@ -72,6 +72,7 @@ export class Reservation extends Component {
         }
         const body = {
             userId: localStorage.getItem("id"),
+            roomId: "5fc7c6ec8959ba55ecb7e38b",
             reservationType: type,
             fromDate: fromDate,
             toDate: toDate,
@@ -79,21 +80,22 @@ export class Reservation extends Component {
             noOfAdults: noOfAdults,
             noOfChildren: noofChildren
         }
-        const URl = "reservation/reservation";
+        const URl = "reservation/roomReservation";
         Axios.post(URl, body)
             .then(res => {
-                console.log(res);
                 if (res.data.Success.message === "Reservation completed!") {
                     toast.success("Reservation is successfully created");  
                     localStorage.setItem("reservation", JSON.stringify(res.data.Success.data))                  
                     this.props.history.push('/payment');
                 } else {
-                    toast.error(res.data.Success.message);
+                    toast.error(res.data.errors.message);
                 }
             })
             .catch(err => {
                 if (err.response) {
-                    toast.error(err.response.data.errors?.message)
+                    toast.error(err.response.data?.errors?.message)
+                    toast.error(err.response.data?.errors?.messae)
+                    toast.error(err.response.data?.errors?.status)
                 } else {
                     toast.error(err.message)
                 }
@@ -137,10 +139,10 @@ export class Reservation extends Component {
                                             <label>Type Of Reservation <span className="text-danger">*</span></label>
                                             <select name="type" defaultValue={'DEFAULT'} onChange={this.handleChange} className="form-inp">
                                                 <option value={"DEFAULT"}>Select Option</option>
-                                                <option value="1">Prepaid reservations</option>
-                                                <option value="2">60-days in advance reservations</option>
-                                                <option value="3">Conventional reservations</option>
-                                                <option value="4">Incentive reservations</option>
+                                                <option>Prepaid reservations</option>
+                                                <option>60-days in advance reservations</option>
+                                                <option>Conventional reservations</option>
+                                                <option>Incentive reservations</option>
                                             </select>
                                         </div>
                                         <div className="row">

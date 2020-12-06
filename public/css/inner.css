@@ -136,7 +136,7 @@ html {
   line-height: 1;
   font-weight: 600;
   font-size: 11px;
-  margin-bottom: 0;
+  margin-bottom: 2px;
 }
 
 .design-box .design-body .design-name {
@@ -562,10 +562,14 @@ html {
   padding-left: 7%;
 }
 
+.hop .payment-details .table th {
+  font-size: 12px;
+}
+
 .hop .payment-details .table td {
   color: #7f7f7f;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 12px;
   border: 0;
   padding: 8px 10px;
 }
@@ -579,5 +583,9 @@ html {
   border: 1px solid #70707026;
   border-right: 0px;
   border-left: 0px;
+}
+
+th, td {
+  font-size: 12px;
 }
 /*# sourceMappingURL=inner.css.map */
