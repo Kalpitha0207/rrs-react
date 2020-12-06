@@ -23,9 +23,10 @@ export class Layout extends Component {
     render() {
         const token = localStorage.getItem("token");
         const name = localStorage.getItem("name");
+        const loginType = localStorage.getItem("loginType");
         return (
             <div>
-                <Header token={token} name={name}/>
+                <Header token={token} name={name} loginType={loginType} />
                 {this.getRoutes(routes)}
                 <Footer />
                 {/* <Signin />
