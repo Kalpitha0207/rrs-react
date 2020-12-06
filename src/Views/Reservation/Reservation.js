@@ -10,6 +10,27 @@ export class Reservation extends Component {
         noOfRooms: 0,
         noOfAdults: 0,
         noofChildren: 0,
+        defaultDate: undefined,
+        minDate: undefined,
+        maxDate: undefined,
+        isSelected: false,
+    }
+
+    componentDidMount() {
+        const min = this.dateFormate(new Date());
+        // console.log(min);
+        this.setState({
+            minDate: min
+        })
+    }
+
+    dateFormate = (val) => {
+        const date = new Date(val);
+        let dd = date.getDate();
+        let mm = date.getMonth() + 1;
+        let yyyy = date.getFullYear();
+        const newDate = yyyy + "-" + mm + "-" + dd;
+        return newDate;
     }
 
     increment = (val) => {
@@ -53,9 +74,64 @@ export class Reservation extends Component {
     handleChange = (event) => {
         var name = event.target.name;
         var value = event.target.value;
-        this.setState({
-            [name]: value
-        })
+        const select1 = "Prepaid reservations";
+        const select2 = "60-days in advance reservations";
+        const select3 = "Conventional reservations";
+        const select4 = "Incentive reservations";
+
+        if (name === "type") {
+            this.setState({
+                type: value,
+                isSelected: !this.state.isSelected
+            })
+        }
+
+        if (name === "fromDate" || name === "toDate") {
+            if (select1 === this.state.type) {
+                const cp1 = new Date(value);
+                const date = new Date();
+                const cp2 = new Date(date.setMonth(date.getMonth() + 3));
+                if (cp1 <= cp2) {
+                    toast.error("min 90days")
+                    return
+                } else {
+                    toast.success("Correct")
+                    this.setState({
+                        [name]: value
+                    });
+                }
+            } else if (select2 === this.state.type) {
+                const cp1 = new Date(value);
+                const date = new Date();
+                const cp2 = new Date(date.setMonth(date.getMonth() + 2));
+                if (cp1 <= cp2) {
+                    toast.error("min 60days")
+                    return
+                } else {
+                    toast.success("Correct")
+                    this.setState({
+                        [name]: value
+                    });
+                }
+            } else if (select3 === this.state.type || select4 === this.state.type) {
+                const cp1 = new Date(value);
+                const cp2 = new Date();
+                // const cp2 = new Date(date.setMonth(date.getMonth() + 2));
+                if (cp1 <= cp2) {
+                    toast.error("Please select correct date")
+                    return
+                } else {
+                    toast.success("Correct")
+                    this.setState({
+                        [name]: value
+                    });
+                }
+            }
+        } else {
+            this.setState({
+                [name]: value
+            });
+        }
     }
 
     handleSubmit = (event) => {
@@ -65,7 +141,42 @@ export class Reservation extends Component {
             toast.error("Please Login");
             return;
         }
+        const select1 = "Prepaid reservations";
+        const select2 = "60-days in advance reservations";
+        const select3 = "Conventional reservations";
+        const select4 = "Incentive reservations";
+        // debugger
+        // if (select1 === this.state.type) {
+        //     const cp1 = new Date(this.state.fromDate);
+        //     const date = new Date();
+        //     const cp2 = new Date(date.setMonth(date.getMonth() + 3));
+        //     if (cp1 <= cp2) {
+        //         toast.error("min 90days")
+        //         return
+        //     }
+        // } else if (select2 === this.state.type) {
+        //     const cp1 = new Date(this.state.fromDate);
+        //     const date = new Date();
+        //     const cp2 = new Date(date.setMonth(date.getMonth() + 2));
+        //     if (cp1 <= cp2) {
+        //         toast.error("min 60days")
+        //         return
+        //     }
+        // } else if (select3 === this.state.type || select4 === this.state.type) {
+        //     const cp1 = new Date(this.state.fromDate);
+        //     const cp2 = new Date();
+        //     // const cp2 = new Date(date.setMonth(date.getMonth() + 2));
+        //     if (cp1 <= cp2) {
+        //         toast.error("Please select correct date")
+        //         return
+        //     }
+        // }
+
         const { type, fromDate, toDate, noOfRooms, noofChildren, noOfAdults } = this.state;
+        if (!toDate || !fromDate) {
+            toast.error("Please select from/to date")
+            return
+        }
         if (noOfRooms === 0 || noOfAdults === 0) {
             toast.error("Please select no of Rooms/Adults/Children");
             return;
@@ -84,8 +195,8 @@ export class Reservation extends Component {
         Axios.post(URl, body)
             .then(res => {
                 if (res.data.Success.message === "Reservation completed!") {
-                    toast.success("Reservation is successfully created");  
-                    localStorage.setItem("reservation", JSON.stringify(res.data.Success.data))                  
+                    toast.success("Reservation is successfully created");
+                    localStorage.setItem("reservation", JSON.stringify(res.data.Success.data))
                     this.props.history.push('/payment');
                 } else {
                     toast.error(res.data.errors.message);
@@ -103,7 +214,7 @@ export class Reservation extends Component {
     }
 
     render() {
-        const { noOfRooms, noOfAdults, noofChildren } = this.state;
+        const { noOfRooms, noOfAdults, noofChildren, maxDate, minDate, isSelected } = this.state;
         var token = localStorage.getItem("token");
 
         return (
@@ -148,11 +259,21 @@ export class Reservation extends Component {
                                         <div className="row">
                                             <div className="form-grp col">
                                                 <label>From Date <span className="text-danger">*</span></label>
-                                                <input type="date" name="fromDate" onChange={this.handleChange} className="form-inp" required />
+                                                <input type="date"
+                                                    name="fromDate"
+                                                    //  min={defaultDate} 
+                                                    // min={minDate} max={maxDate}
+                                                    disabled={!isSelected}
+                                                    onChange={this.handleChange}
+                                                    className="form-inp" required />
                                             </div>
                                             <div className="form-grp col">
                                                 <label>To Date <span className="text-danger">*</span></label>
-                                                <input type="date" name="toDate" onChange={this.handleChange} className="form-inp" required />
+                                                <input type="date"
+                                                    name="toDate"
+                                                    disabled={!isSelected}
+                                                    onChange={this.handleChange}
+                                                    className="form-inp" required />
                                             </div>
                                         </div>
                                         <div className="form-grp form-flex">
@@ -188,9 +309,9 @@ export class Reservation extends Component {
                             </div>
                             <div className="col-md-5">
                                 <div className="choose-box choose-box-border">
-                                    <h4 className="choose-box-header">
+                                    {/* <h4 className="choose-box-header">
                                         Ads
-                      </h4>
+                      </h4> */}
                                     <img src="images/room.jpeg" alt="no image" className="img-thumbnail mb-3" />
                                     <img src="images/resort.jpg" alt="no image" className="img-thumbnail mb-3" />
                                 </div>

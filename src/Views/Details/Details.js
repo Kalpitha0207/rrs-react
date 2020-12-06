@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
+import { renderToString } from "react-dom/server";
+import jsPDF from "jspdf";
+import autoTable from 'jspdf-autotable'
 import Axios from '../../hoc/axios';
 
 export class Details extends Component {
@@ -102,6 +105,112 @@ export class Details extends Component {
         return new Date(val)
     }
 
+
+
+    print = (props) => {
+        const array = props?.map((item, index) => {
+            const obj = {
+                sno: index + 1,
+                fromDate: new Date(item.fromDate).toLocaleDateString(),
+                toDate: new Date(item.toDate).toLocaleDateString(),
+                noOfRooms: item.noOfRooms,
+                noOfAdults: item.noOfAdults,
+                noOfChildren: item.noOfChildren,
+                reservationType: item.reservationType
+            }
+            return Object.values(obj)
+        })
+        const doc = new jsPDF();
+        doc.autoTable({
+            head: [['SNO', 'From Date', 'To Date', 'No Of Rooms', 'No Of Adults', 'No Of Children', "Type"]],
+            body: array,
+        })
+        doc.save("report.pdf");
+    };
+
+
+    print1 = (props) => {
+        const array = props?.map((item, index) => {
+            const obj = {
+                sno: index + 1,
+                fromDate: new Date(item.fromDate).toLocaleDateString(),
+                toDate: new Date(item.toDate).toLocaleDateString(),
+                noOfBikes: item.noOfBikes,
+                picnicLunch: item.picnicLunch,
+                equipmentType: item.equipmentType
+            }
+            return Object.values(obj)
+        })
+        const doc = new jsPDF();
+        doc.autoTable({
+            head: [['SNO', 'From Date', 'To Date', 'No Of Bikes', 'Picnic Lunch', "Type"]],
+            body: array,
+        })
+        doc.save("report.pdf");
+    };
+
+
+    print2 = (props) => {
+        const array = props?.map((item, index) => {
+            const obj = {
+                sno: index + 1,
+                guestName: item.guestName,
+                roomNo: item.roomNo,
+                noOfPeople: item.noOfPeople,
+                serverName: item.serverName,
+                tipToServer: item.tipToServer,
+                total: item.total
+            }
+            return Object.values(obj)
+        })
+        const doc = new jsPDF();
+        doc.autoTable({
+            head: [['SNO', 'Guest Name', 'Room Number', 'No Of People', 'Server Name', "Tip", "Total"]],
+            body: array,
+        })
+        doc.save("report.pdf");
+    };
+
+    print3 = (props) => {
+        const array = props?.map((item, index) => {
+            const obj = {
+                sno: index + 1,
+                guestName: item.guestName,
+                roomNo: item.roomNo,
+                noOfPeople: item.noOfPeople,
+                date: new Date(item.reservationDate).toLocaleDateString(),
+                specialRequest: item.specialRequest
+            }
+            return Object.values(obj)
+        })
+        const doc = new jsPDF();
+        doc.autoTable({
+            head: [['SNO', 'Guest Name', 'Room Number', 'No Of People', 'Date', "Special Request"]],
+            body: array,
+        })
+        doc.save("report.pdf");
+    };
+
+
+    print4 = (props) => {
+        const array = props?.map((item, index) => {
+            const obj = {
+                sno: index + 1,
+                cardName: item.cardName,
+                cardNumber: item.cardNumber,
+                amount: item.amount,
+                paymentType: item.paymentType
+            }
+            return Object.values(obj)
+        })
+        const doc = new jsPDF();
+        doc.autoTable({
+            head: [['SNO', 'Card Name', 'Card Number', 'Amount', 'Payment Type']],
+            body: array,
+        })
+        doc.save("report.pdf");
+    };
+
     render() {
         const { reservation, chargeRooms, rentals, payments, meal } = this.state;
 
@@ -117,6 +226,7 @@ export class Details extends Component {
                                         Booking Details
                         <hr className="home-hr" />
                                     </h1>
+                                    {/* <button onClick={this.print}>Download Report</button> */}
                                 </div>
                             </div>
                         </div>
@@ -130,8 +240,9 @@ export class Details extends Component {
                                 <div className="choose-box choose-box-border about">
                                     <h4 className="choose-box-header mb-4">
                                         Booking Details
+                                        <button onClick={() => this.print(reservation)} className="btn btn-small btn-primary float-right">Download</button>
                                     </h4>
-                                    <div className="table-responsive">
+                                    <div className="table-responsive" id="reserv">
                                         <table className="table">
                                             <thead className="thead-dark">
                                                 <tr>
@@ -167,10 +278,11 @@ export class Details extends Component {
                                         </table>
                                     </div>
 
-                                    <hr/>
+                                    <hr />
 
                                     <h4 className="choose-box-header mb-4">
                                         Rentals and Hikes
+                                        <button onClick={() => this.print1(rentals)} className="btn btn-small btn-primary float-right">Download</button>
                                     </h4>
                                     <div className="table-responsive">
                                         <table className="table">
@@ -204,10 +316,11 @@ export class Details extends Component {
                                         </table>
                                     </div>
 
-                                    <hr/>
+                                    <hr />
 
                                     <h4 className="choose-box-header mb-4">
                                         Charge To Room
+                                        <button onClick={() => this.print2(chargeRooms)} className="btn btn-small btn-primary float-right">Download</button>
                                     </h4>
                                     <div className="table-responsive">
                                         <table className="table">
@@ -239,10 +352,11 @@ export class Details extends Component {
                                         </table>
                                     </div>
 
-                                    <hr/>
-                                    
+                                    <hr />
+
                                     <h4 className="choose-box-header mb-4">
                                         Meal Reservations
+                                        <button onClick={() => this.print3(meal)} className="btn btn-small btn-primary float-right">Download</button>
                                     </h4>
                                     <div className="table-responsive">
                                         <table className="table">
@@ -272,10 +386,11 @@ export class Details extends Component {
                                         </table>
                                     </div>
 
-                                    <hr/>
+                                    <hr />
 
                                     <h4 className="choose-box-header mb-4">
                                         Payment
+                                        <button onClick={() => this.print4(payments)} className="btn btn-small btn-primary float-right">Download</button>
                                     </h4>
                                     <div className="table-responsive">
                                         <table className="table">

@@ -15,24 +15,27 @@ export class PaymentView extends Component {
         if (reservation === null || reservation === undefined) {
             return;
         }
-
-        // if (reservation.reservationType === "1") {
-        //     this.setState({
-        //         amoumt: 150 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "2") {
-        //     this.setState({
-        //         amoumt: 170 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "3") {
-        //     this.setState({
-        //         amoumt: 100 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "4") {
-        //     this.setState({
-        //         amoumt: 160 * reservation.noOfRooms
-        //     })
-        // }
+        const select1 = "Prepaid reservations";
+        const select2 = "60-days in advance reservations";
+        const select3 = "Conventional reservations";
+        const select4 = "Incentive reservations";
+        if (reservation.reservationType === select1) {
+            this.setState({
+                amount: 150 * reservation.noOfRooms
+            })
+        } else if (reservation.reservationType === select2) {
+            this.setState({
+                amount: 170 * reservation.noOfRooms
+            })
+        } else if (reservation.reservationType === select3) {
+            this.setState({
+                amount: 100 * reservation.noOfRooms
+            })
+        } else if (reservation.reservationType === select4) {
+            this.setState({
+                amount: 160 * reservation.noOfRooms
+            })
+        }
     }
 
     home = () => {
@@ -87,7 +90,11 @@ export class PaymentView extends Component {
                                             The Borrego Springs resort
                                         </li>
                                         <li className="hop-list-li">
-                                            <span className="tag">Amount: </span><span className="amount">${reservation.totalFare}</span>
+                                            <span className="tag">Amount: </span>
+                                            <span className="amount">$
+                                            {/* {reservation.totalFare} */}
+                                            {this.state.amount}
+                                            </span>
                                         </li>
                                     </ul>
                                 </div>
@@ -105,7 +112,10 @@ export class PaymentView extends Component {
                                         <tbody>
                                             <tr>
                                                 <td className="w-75">Cost</td>
-                                                <td>${reservation.totalFare}</td>
+                                                <td>$
+                                                    {/* {reservation.totalFare} */}
+                                                    {this.state.amount}
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td className="w-75">Additional Gst</td>
@@ -113,7 +123,10 @@ export class PaymentView extends Component {
                                             </tr>
                                             <tr className="payment-border">
                                                 <td className="w-75">Total</td>
-                                                <td>${reservation.totalFare}</td>
+                                                <td>$
+                                                    {/* {reservation.totalFare} */}
+                                                    {this.state.amount}
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>

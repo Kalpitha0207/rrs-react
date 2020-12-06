@@ -9,7 +9,7 @@ export class Payment extends Component {
         cardName: '',
         expDate: Date,
         cvv: Number,
-        amoumt: Number,
+        amount: Number,
         reservation: undefined,
         amount: Number,
     }
@@ -23,26 +23,30 @@ export class Payment extends Component {
         if (reservation === null || reservation === undefined) {
             return;
         }
-        this.setState({
-            amoumt: reservation.totalFare
-        })
-        // if (reservation.reservationType === "1") {
-        //     this.setState({
-        //         amoumt: 150 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "2") {
-        //     this.setState({
-        //         amoumt: 170 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "3") {
-        //     this.setState({
-        //         amoumt: 100 * reservation.noOfRooms
-        //     })
-        // } else if (reservation.reservationType === "4") {
-        //     this.setState({
-        //         amoumt: 160 * reservation.noOfRooms
-        //     })
-        // }
+        // this.setState({
+        //     amount: reservation.totalFare
+        // })
+        const select1 = "Prepaid reservations";
+        const select2 = "60-days in advance reservations";
+        const select3 = "Conventional reservations";
+        const select4 = "Incentive reservations";
+        if (reservation.reservationType === select1) {
+            this.setState({
+                amount: 150 * reservation.noOfRooms
+            })
+        } else if (reservation.reservationType === select2) {
+            this.setState({
+                amount: 170 * reservation.noOfRooms
+            })
+        } else if (reservation.reservationType === select3) {
+            this.setState({
+                amount: 100 * reservation.noOfRooms
+            })
+        } else if (reservation.reservationType === select4) {
+            this.setState({
+                amount: 160 * reservation.noOfRooms
+            })
+        }
     }
 
 
@@ -61,9 +65,9 @@ export class Payment extends Component {
             toast.error("Please Login");
             return;
         }
-        const { cardNumber, cardName, expDate, cvv, amoumt } = this.state;
+        const { cardNumber, cardName, expDate, cvv, amount } = this.state;
 
-        if (!cardNumber || !cardName || !expDate || !cvv || !amoumt) {
+        if (!cardNumber || !cardName || !expDate || !cvv || !amount) {
             toast.error("Please fill all input fields");
             return;
         }
@@ -75,7 +79,7 @@ export class Payment extends Component {
             cardName: cardName,
             expDate: expDate,
             cvv: parseInt(cvv),
-            amount: parseInt(amoumt)
+            amount: parseInt(amount)
         }
         const URl = "reservation/payment";
         Axios.post(URl, body)
@@ -129,7 +133,11 @@ export class Payment extends Component {
                                             The Borrego Springs resort
                                         </li>
                                         <li className="hop-list-li">
-                                            <span className="tag">Amount: </span><span className="amount">${reservation.totalFare}</span>
+                                            <span className="tag">Amount: </span>
+                                            <span className="amount">$
+                                            {/* {reservation.totalFare} */}
+                                            {this.state.amount}
+                                            </span>
                                         </li>
                                     </ul>
                                     <hr className="hop-hr" />
@@ -192,7 +200,7 @@ export class Payment extends Component {
                                             </div>
                                             <div className="form-group">
                                                 <label className="small mb-1">Amount <span className="text-danger">*</span></label>
-                                                <input type="number" name="amoumt" defaultValue={this.state.amoumt} className="form-control modal-inp" placeholder="Amount" disabled readOnly required />
+                                                <input type="number" name="amount" defaultValue={this.state.amount} className="form-control modal-inp" placeholder="Amount" disabled readOnly required />
                                             </div>
                                         </form>
                                     </div>

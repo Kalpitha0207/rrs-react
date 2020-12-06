@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { toast } from 'react-toastify';
 
 export class Contact extends Component {
     state = {
@@ -19,6 +20,9 @@ export class Contact extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
+        const id = document.getElementById("contact");
+        id.reset();
+        toast.success("We will get back to you soon!...")
     }
 
     render() {
@@ -49,7 +53,7 @@ export class Contact extends Component {
                                         Contact Us Form
                       </h4>
                                     {/* <hr/> */}
-                                    <form onSubmit={this.handleSubmit}>
+                                    <form onSubmit={this.handleSubmit} id="contact">
                                         <div className="form-grp">
                                             <label>Name</label>
                                             <input type="text" name="name" onChange={this.handleChange} className="form-inp" placeholder="Enter your Name" required />
@@ -79,9 +83,9 @@ export class Contact extends Component {
                             </div>
                             <div className="col-md-5">
                                 <div className="choose-box choose-box-border">
-                                    <h4 className="choose-box-header">
+                                    {/* <h4 className="choose-box-header">
                                         Ads
-                      </h4>
+                      </h4> */}
                                     <img src="images/resort.jpg" alt="no image" className="img-thumbnail" />
                                 </div>
                             </div>

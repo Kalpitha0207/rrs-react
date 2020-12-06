@@ -168,9 +168,9 @@ export class Rental extends Component {
                             </div>
                             <div className="col-md-5">
                                 <div className="choose-box choose-box-border">
-                                    <h4 className="choose-box-header">
+                                    {/* <h4 className="choose-box-header">
                                         Ads
-                      </h4>
+                      </h4> */}
                                     <img src="images/hi4.jpg" alt="no image1" className="img-thumbnail mb-3" />
                                     <img src="images/hi5.jpg" alt="no image2" className="img-thumbnail mb-3" />
                                     <img src="images/hi1.jfif" alt="no image3" className="img-thumbnail mb-3" />

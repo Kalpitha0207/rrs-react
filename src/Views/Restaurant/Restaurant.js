@@ -73,7 +73,7 @@ export class Restaurant extends Component {
         const type = select === "1" ? "Meal Reservation" : "Charge to Room";
         if (select === "1") {
             if (noOfPeople === 0) {
-                toast.error("Please select no of Bikes");
+                toast.error("Please select no of People");
                 return;
             }
             const body = {
@@ -89,8 +89,8 @@ export class Restaurant extends Component {
             Axios.post(URl, body)
                 .then(res => {
                     const clear = document.getElementById("form");
-                    clear.reset();  
-                    toast.success("Meal Reservation not completed!");
+                    clear.reset();
+                    toast.success("Meal Reservation completed!");
                     this.setState({
                         noOfPeople: 0
                     })
@@ -99,7 +99,7 @@ export class Restaurant extends Component {
                 .catch(err => {
                     const error = err.response?.data?.errors.message;
                     toast.error(error);
-                })            
+                })
         } else {
             if (noOfMeal === 0) {
                 toast.error("Please select no of People");
@@ -113,7 +113,7 @@ export class Restaurant extends Component {
                 serverName: serverName,
                 tipToServer: parseInt(tip),
                 noOfPeople: noOfMeal,
-                total:parseInt(total)
+                total: parseInt(total)
             }
             const URl = "reservation/chargeToRoom";
             Axios.post(URl, body)
@@ -127,7 +127,7 @@ export class Restaurant extends Component {
                     const error = err.response?.data?.errors.message;
                     toast.error(error);
                 })
-            
+
         }
     }
 
@@ -248,9 +248,9 @@ export class Restaurant extends Component {
                             </div>
                             <div className="col-md-5">
                                 <div className="choose-box choose-box-border">
-                                    <h4 className="choose-box-header">
+                                    {/* <h4 className="choose-box-header">
                                         Ads
-                                    </h4>
+                                    </h4> */}
                                     <img src="images/ho1.jpg" alt="no image" className="img-thumbnail mb-3" />
                                     <img src="images/ho2.jpg" alt="no image" className="img-thumbnail mb-3" />
                                     <img src="images/ho3.jpg" alt="no image" className="img-thumbnail mb-3" />
