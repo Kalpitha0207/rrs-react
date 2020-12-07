@@ -1,4 +1,5 @@
 import Contact from "./Views/Contact/Contact";
+import AdminDetails from "./Views/Details/AdminDetails";
 import Details from "./Views/Details/Details";
 import Home from "./Views/Home/Home";
 import Payment from "./Views/Payment/Payment";
@@ -26,6 +27,7 @@ const routes = [
     { path: "/paymentRoomCharge", strict: true, exact: true, name: 'PaymentRoomCharge', component: PaymentRoomCharge },
     { path: "/paymentViewCharge", strict: true, exact: true, name: 'PaymentViewCharge', component: PaymentViewCharge },
     { path: "/details", strict: true, exact: true, name: 'Details', component: Details },
+    { path: "/reports", strict: true, exact: true, name: 'AdminDetails', component: AdminDetails },
     { path: "/rooms", strict: true, exact: true, name: 'Rooms', component: Rooms }
 ];
 

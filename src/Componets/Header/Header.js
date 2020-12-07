@@ -37,7 +37,7 @@ export class Header extends PureComponent {
                             <i className="fas fa-bars" />
                         </button>
                         <div className="collapse navbar-collapse" id="menu">
-                            <ul className="navbar-nav mx-auto custom-navbar-nav">
+                            {!loginType ? <ul className="navbar-nav mx-auto custom-navbar-nav">
                                 <li className="nav-item" >
                                     <NavLink to='/' exact className="nav-link" activeClassName='active'>Home</NavLink>
                                 </li>
@@ -53,14 +53,19 @@ export class Header extends PureComponent {
                                 <li className="nav-item">
                                     <NavLink to='/contact' className="nav-link" activeClassName='active'>Contact Us</NavLink>
                                 </li>
-                            </ul>
+                            </ul> :
+                                <ul className="navbar-nav mx-auto custom-navbar-nav">
+                                    <li className="nav-item">
+                                        <NavLink to='/reports' className="nav-link" activeClassName='active'>Reports</NavLink>
+                                    </li>
+                                </ul>}
                             <form className="form-inline my-2 my-lg-0">
                                 {token ? <div className="dropdown">
                                     <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i className="far fa-user-circle"></i> {name}
                                     </button>
                                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <NavLink to="/details" className="dropdown-item">Booking Details</NavLink>
+                                        {!loginType ? <NavLink to="/details" className="dropdown-item">Booking Details</NavLink> : null}
                                         <NavLink to="/" className="dropdown-item" onClick={this.logout}>Logout</NavLink>
                                     </div>
                                 </div>

@@ -39,43 +39,44 @@ export class Signin extends Component {
             email: this.state.email,
             password: this.state.password
         }
-        // if (this.state.loginType === "admin") {
-        //     Axios.post("admin/signin", body)
-        //         .then(res => {
-        //             const token = res.data.token;
-        //             const user = jwt(token);
-        //             localStorage.setItem("token", res.data.token);
-        //             localStorage.setItem("name", user.name);
-        //             localStorage.setItem("id", user.id);
-        //             toast.success(res.data.message)
-        //             this.props.history.push('/details');
-        //         })
-        //         .catch(err => {
-        //             if (err.response) {
-        //                 toast.error(err.response.data.errors?.message)
-        //             } else {
-        //                 toast.error(err.message)
-        //             }
-        //         })
-        //     return;
-        // }
-        Axios.post("user/signin", body)
-            .then(res => {
-                const token = res.data.token;
-                const user = jwt(token);
-                localStorage.setItem("token", res.data.token);
-                localStorage.setItem("name", user.name);
-                localStorage.setItem("id", user.id);
-                toast.success(res.data.message)
-                this.props.history.push('');
-            })
-            .catch(err => {
-                if (err.response) {
-                    toast.error(err.response.data.errors?.message)
-                } else {
-                    toast.error(err.message)
-                }
-            })
+        if (this.state.loginType === "admin") {
+            Axios.post("admin/signin", body)
+                .then(res => {
+                    const token = res.data.token;
+                    const user = jwt(token);
+                    localStorage.setItem("token", res.data.token);
+                    localStorage.setItem("name", user.name);
+                    localStorage.setItem("id", user.id);
+                    toast.success(res.data.message)
+                    this.props.history.push('/reports');
+                })
+                .catch(err => {
+                    if (err.response) {
+                        toast.error(err.response.data.errors?.message)
+                    } else {
+                        toast.error(err.message)
+                    }
+                })
+            return;
+        } else {
+            Axios.post("user/signin", body)
+                .then(res => {
+                    const token = res.data.token;
+                    const user = jwt(token);
+                    localStorage.setItem("token", res.data.token);
+                    localStorage.setItem("name", user.name);
+                    localStorage.setItem("id", user.id);
+                    toast.success(res.data.message)
+                    this.props.history.push('');
+                })
+                .catch(err => {
+                    if (err.response) {
+                        toast.error(err.response.data.errors?.message)
+                    } else {
+                        toast.error(err.message)
+                    }
+                })
+        }
     }
 
     render() {

@@ -29,7 +29,7 @@ export class PaymentView extends Component {
             })
         } else if (reservation.reservationType === select3) {
             this.setState({
-                amount: 100 * reservation.noOfRooms
+                amount: 200 * reservation.noOfRooms
             })
         } else if (reservation.reservationType === select4) {
             this.setState({
